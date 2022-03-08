@@ -1,0 +1,85 @@
+{
+  "name": "first-important-paint",
+  "version": "0.1.0",
+  "description": "Measure the time taken to paint the first important element.",
+  "main": "dist/first-important-paint.umd.js",
+  "module": "dist/first-important-paint.js",
+  "typings": "dist/modules/index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "run-s clean build:ts build:js",
+    "build:ts": "tsc -b",
+    "build:js": "rollup -c",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "dev": "run-p watch",
+    "lint": "eslint \"*.js\" \"src/**/*.ts\"",
+    "lint:fix": "eslint --fix \"*.js\" \"src/**/*.ts\"",
+    "postversion": "git push --follow-tags",
+    "release:major": "npm version major -m 'Release v%s' && npm publish",
+    "release:minor": "npm version minor -m 'Release v%s' && npm publish",
+    "release:patch": "npm version patch -m 'Release v%s' && npm publish",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "start": "run-s build:ts watch",
+    "watch": "run-p watch:*",
+    "watch:ts": "tsc -b -w",
+    "watch:js": "rollup -c -w",
+    "version": "run-s build",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "crux",
+    "performance",
+    "metrics",
+    "FIP"
+  ],
+  "author": {
+    "name": "Kevin Farrugia",
+    "email": "hello@imkev.dev",
+    "url": "https://imkev.dev"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevinfarrugia/first-important-paint.git"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "eslint --no-ignore --fix",
+      "git add --force"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.10",
+    "@babel/preset-env": "^7.16.11",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "body-parser": "^1.19.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "express": "^4.17.2",
+    "fs-extra": "^10.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "12.3.4",
+    "npm-run-all": "^4.1.5",
+    "nunjucks": "^3.2.3",
+    "rollup": "^2.64.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.5.5"
+  }
+}
