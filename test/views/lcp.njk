@@ -1,9 +1,23 @@
 {% extends 'layout.njk' %}
 
+{% block head %}
+  <script>
+    new PerformanceObserver(list => {
+      const entries = list.getEntries();
+      const entry = entries[entries.length - 1];
+
+      // Log for easier manual testing.
+      console.log(entry);
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(entry));
+    }).observe({type: 'largest-contentful-paint', buffered: true});
+  </script>
+{% endblock %}
+
 {% block content %}
-  <h1>Important Element is LCP Element</h1>
+  <h1 important="true">Important Element is LCP Element</h1>
   <img
-    important="true"
     src="/test/img/square.png?delay=1000"
     alt="Square"
 />

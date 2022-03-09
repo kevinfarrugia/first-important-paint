@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-const fs = require('fs-extra');
+const fs = require("fs-extra");
 
-
-const BEACON_FILE = './test/beacons.log';
+const BEACON_FILE = "./test/beacons.log";
 
 /**
  * @param {Object} count
@@ -31,17 +30,15 @@ async function beaconCountIs(count) {
 }
 
 /**
- * Gets the array of beacons sent for the current page load (i.e. the
- * most recently sent beacons with the same metric ID).
+ * Gets the array of of all beacons
  * @return {Promise<Array>}
  */
-async function getBeacons(id = undefined) {
-  const json = await fs.readFile(BEACON_FILE, 'utf-8');
-  const allBeacons = json.trim().split('\n').filter(Boolean).map(JSON.parse);
+async function getBeacons() {
+  const json = await fs.readFile(BEACON_FILE, "utf-8");
+  const allBeacons = json.trim().split("\n").filter(Boolean).map(JSON.parse);
 
   if (allBeacons.length) {
-    const lastBeaconID = allBeacons[allBeacons.length - 1].id;
-    return allBeacons.filter((beacon) => beacon.id === lastBeaconID);
+    return allBeacons;
   }
   return [];
 }
