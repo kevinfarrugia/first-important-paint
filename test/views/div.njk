@@ -1,0 +1,58 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+  <h1>Important Div Element</h1>
+  <div important="true" class="container">
+    <strong>Important container</strong>
+    <hr/>
+    <ul class="list">
+      <li class="item">4</li>
+      <li class="item">1</li>
+      <li class="item">0</li>
+      <li class="item">9</li>
+      <li class="item">4</li>
+      <li class="item">1</li>
+      <li class="item">6</li>
+    </ul>
+  </div>
+  <div class="container">
+    <strong>Non-important container</strong>
+    <hr/>
+    <ul class="list">
+      <li class="item">4</li>
+      <li class="item">2</li>
+      <li class="item">3</li>
+      <li class="item">1</li>
+      <li class="item">1</li>
+      <li class="item">9</li>
+      <li class="item">4</li>
+      <li class="item">9</li>
+      <li class="item">8</li>
+      <li class="item">8</li>
+      <li class="item">8</li>
+      <li class="item">4</li>
+      <li class="item">2</li>
+      <li class="item">0</li>
+      <li class="item">4</li>
+      <li class="item">0</li>
+      <li class="item">6</li>
+      <li class="item">7</li>
+      <li class="item">5</li>
+      <li class="item">3</li>
+      <li class="item">5</li>
+      <li class="item">9</li>
+      <li class="item">2</li>
+      <li class="item">6</li>
+      <li class="item">1</li>
+      <li class="item">9</li>
+      <li class="item">0</li>
+      <li class="item">9</li>
+      <li class="item">0</li>
+      <li class="item">7</li>
+    </ul>
+  </div>
+
+  <!-- Include a tall element to ensure scrolling is possible. -->
+  <div style="height: 100vh"></div>
+  <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
+{% endblock %}

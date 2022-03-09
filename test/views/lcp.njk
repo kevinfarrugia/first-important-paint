@@ -1,0 +1,16 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+  <h1>Important Element is LCP Element</h1>
+  <img
+    important="true"
+    src="/test/img/square.png?delay=1000"
+    alt="Square"
+/>
+  <p>
+    Lorem
+  </p>
+  <!-- Include a tall element to ensure scrolling is possible. -->
+  <div style="height: 100vh"></div>
+  <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
+{% endblock %}

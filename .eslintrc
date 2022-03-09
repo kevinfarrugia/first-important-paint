@@ -1,6 +1,6 @@
 {
   "extends": ["airbnb", "prettier", "plugin:@typescript-eslint/recommended"],
-  "globals": { "Glider": true },
+  "globals": { "window": true },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
   "settings": {
@@ -12,7 +12,6 @@
   },
   "rules": {
     "import/prefer-default-export": [0],
-    "class-methods-use-this": [0],
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md
     "import/no-extraneous-dependencies": ["error", { "packageDir": "." }],
     // https://eslint.org/docs/rules/no-console

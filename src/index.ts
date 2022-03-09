@@ -1,3 +1,3 @@
-export { profileFirstCriticalPaint } from "./first-important-paint";
+export { getFirstImportantPaint } from "./first-important-paint";
 
 export * from "./types";

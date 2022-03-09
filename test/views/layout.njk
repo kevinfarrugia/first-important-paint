@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      .app {
+        font-family: sans-serif;
+        text-align: center;
+      }
+
+      .container {
+        padding: 1em;
+      }
+
+      .list {
+        display: grid;
+        background-color: palegreen;
+        grid-template-columns: 1fr 1fr 1fr;
+        list-style: none;
+        padding: 1em;
+        min-height: 10em;
+      }
+
+      .item {
+        display: block;
+        background-color: white;
+        padding: 1em;
+        margin: 0.5em;
+        font-size: 2em;
+        line-height: 2;
+        font-weight: 700;
+        box-shadow: 1px 1px 7px -1px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-item {
+        margin-right: 1em;
+      }
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body onload="{% if scroll %}window.scrollTo(0, document.body.scrollHeight);{% endif %}">
+    <div class="app">
+      {% block content %}{% endblock %}
+    </div>
+    <script type="module">
+      import {getFirstImportantPaint} from '{{ modulePath }}';
+
+      getFirstImportantPaint((fip) => {
+        // Log for easier manual testing.
+        console.log(fip);
+
+        // Test sending the metric to an analytics endpoint.
+        navigator.sendBeacon(`/collect`, JSON.stringify(fip));
+      });
+    </script>    
+  </body>
+</html
