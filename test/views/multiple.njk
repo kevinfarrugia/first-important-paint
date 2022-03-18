@@ -66,4 +66,16 @@
   <!-- Include a tall element to ensure scrolling is possible. -->
   <div style="height: 100vh"></div>
   <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
+
+  <script type="module">
+    import {getFirstImportantPaint} from '{{ modulePath }}';
+
+    getFirstImportantPaint((fip) => {
+      // Log for easier manual testing.
+      console.log(fip);
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(fip));
+    });
+  </script>
 {% endblock %}

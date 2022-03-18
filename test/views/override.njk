@@ -1,29 +1,17 @@
 {% extends 'layout.njk' %}
 
-{% block head %}
-  <script>
-    new PerformanceObserver(list => {
-      const entries = list.getEntries();
-      const entry = entries[entries.length - 1];
-
-      // Log for easier manual testing.
-      console.log(entry);
-
-      // Test sending the metric to an analytics endpoint.
-      navigator.sendBeacon(`/collect`, JSON.stringify(entry));
-    }).observe({type: 'largest-contentful-paint', buffered: true});
-  </script>
-{% endblock %}
-
 {% block content %}
-  <h1></h1>
+  <h1>Important Image</h1>
   <img
-    important="true"
+    critical="true"
     src="/test/img/square.png?delay=1000"
     alt="Square"
 />
   <p>
-    Lorem
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Est sapiente
+    reiciendis iste velit laboriosam cupiditate, perferendis molestias
+    officia non delectus voluptates nulla voluptatibus repellat suscipit
+    deleniti maiores maxime. Quas, ratione?
   </p>
   <!-- Include a tall element to ensure scrolling is possible. -->
   <div style="height: 100vh"></div>
@@ -38,6 +26,6 @@
 
       // Test sending the metric to an analytics endpoint.
       navigator.sendBeacon(`/collect`, JSON.stringify(fip));
-    });
+    }, { markName: "first-critical-paint", selector: "[critical]" });
   </script>
 {% endblock %}

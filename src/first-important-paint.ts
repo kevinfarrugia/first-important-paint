@@ -1,8 +1,8 @@
-import { onMeasure } from "./types";
+import { FirstImportantPaintOptions, onMeasure } from "./types";
 
-const MEASURE_NAME = "first-important-paint";
-const MAX_TIMEOUT = 60000;
-const template = "[important]";
+const MARK_NAME = "first-important-paint";
+const TIMEOUT = 60000;
+const SELECTOR = "[important]";
 
 let handle: number;
 let element: Element | null;
@@ -26,36 +26,47 @@ events.forEach((n) => {
   });
 });
 
-const measure = (cb: onMeasure) => () => {
-  document.querySelectorAll(template).forEach((n) => {
-    // if we haven't already measured the element
-    if (!element && element !== n && !hasUserInteractedWithPage) {
-      // if the element is an image, wait until it has has completely loaded
-      if (n.tagName !== "IMG" || (n as HTMLImageElement).complete) {
-        element = n;
+const measure =
+  (cb: onMeasure, opts: FirstImportantPaintOptions = {}) =>
+  () => {
+    const {
+      selector = SELECTOR,
+      markName = MARK_NAME,
+      timeout = TIMEOUT,
+    } = opts;
 
-        // create a new performance.mark entry
-        if (performance.mark) {
-          performance.mark(MEASURE_NAME, {
-            detail: { element: (element.cloneNode() as Element).outerHTML },
-          });
+    document.querySelectorAll(selector).forEach((n) => {
+      // if we haven't already measured the element
+      if (!element && element !== n && !hasUserInteractedWithPage) {
+        // if the element is an image, wait until it has has completely loaded
+        if (n.tagName !== "IMG" || (n as HTMLImageElement).complete) {
+          element = n;
 
-          const [entry] = performance.getEntriesByName(MEASURE_NAME);
+          // create a new performance.mark entry
+          if (performance.mark) {
+            performance.mark(markName, {
+              detail: { element: (element.cloneNode() as Element).outerHTML },
+            });
 
-          cb(entry);
+            const [entry] = performance.getEntriesByName(markName);
+
+            cb(entry);
+          }
         }
       }
+    });
+
+    // stop searching after TIMEOUT
+    if (performance.now() > timeout || hasUserInteractedWithPage || element) {
+      cancelAnimationFrame(handle);
+    } else {
+      handle = requestAnimationFrame(measure(cb, opts));
     }
-  });
+  };
 
-  // stop searching after MAX_TIMEOUT
-  if (performance.now() > MAX_TIMEOUT || hasUserInteractedWithPage || element) {
-    cancelAnimationFrame(handle);
-  } else {
-    handle = requestAnimationFrame(measure(cb));
-  }
-};
-
-export const getFirstImportantPaint = (cb: onMeasure) => {
-  handle = requestAnimationFrame(measure(cb));
+export const getFirstImportantPaint = (
+  cb: onMeasure,
+  opts: FirstImportantPaintOptions
+) => {
+  handle = requestAnimationFrame(measure(cb, opts));
 };

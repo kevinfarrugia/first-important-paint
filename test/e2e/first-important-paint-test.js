@@ -150,4 +150,23 @@ describe("getFirstImportantPaint()", async function () {
     assert.strictEqual(fip.name, "first-important-paint");
     assert.strictEqual(fip.entryType, "mark");
   });
+
+  it("reports the correct value when overriding the default values", async function () {
+    if (!isPerformanceMarkSupportedOnBrowser) this.skip();
+
+    await browser.url(`/test/override?delay=${DELAY}`);
+
+    // Wait until all images are loaded and fully rendered.
+    await imagesPainted();
+
+    await beaconCountIs(1);
+    const beacons = await getBeacons();
+    assert.strictEqual(beacons.length, 1);
+
+    const [fip] = beacons;
+
+    assert(fip.startTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.name, "first-critical-paint");
+    assert.strictEqual(fip.entryType, "mark");
+  });
 });
