@@ -45,16 +45,5 @@
     <div class="app">
       {% block content %}{% endblock %}
     </div>
-    <script type="module">
-      import {getFirstImportantPaint} from '{{ modulePath }}';
-
-      getFirstImportantPaint((fip) => {
-        // Log for easier manual testing.
-        console.log(fip);
-
-        // Test sending the metric to an analytics endpoint.
-        navigator.sendBeacon(`/collect`, JSON.stringify(fip));
-      });
-    </script>    
   </body>
 </html

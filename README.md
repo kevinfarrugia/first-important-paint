@@ -35,9 +35,17 @@ getFirstImportantPaint((fip) => {
   </div>
 ```
 
+## Options
+
+| Option     | Type   | Description                                                                               |
+| ---------- | ------ | ----------------------------------------------------------------------------------------- |
+| `markName` | string | The name to be used when creating the performance.mark (Default: `first-important-paint`) |
+| `selector` | string | The CSS selector to use to identify important elemtns. (Default: `[important]`)           |
+| `timeout`  | number | The maximum time, in milliseconds, to search for the element. (Default: `60000`)          |
+
 ## Accuracy
 
-// TODO: Data is currently being collected
+_Data is currently being collected._
 
 ## FAQ
 
