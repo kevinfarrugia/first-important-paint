@@ -12,7 +12,6 @@ let hasUserInteractedWithPage = false;
 const events = ["mousedown", "keypress", "scroll", "touchstart"];
 
 const handleUserInteraction = () => {
-  // eslint-disable-next-line no-console
   events.forEach((n) => {
     document.removeEventListener(n, handleUserInteraction);
   });
