@@ -34,7 +34,7 @@
           const {id, nodeName, src} = detail;
 
           // Test sending the metric to an analytics endpoint.
-          navigator.sendBeacon(`/collect`, JSON.stringify({name, renderTime: startTime, id, nodeName, url: src}));
+          navigator.sendBeacon(`/collect`, JSON.stringify({entryType: "hero-image", renderTime: startTime, id, nodeName, url: src}));
         }
       }
     }).observe({ type: "mark", buffered: true});

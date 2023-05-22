@@ -1,5 +1,6 @@
 import { terser } from "rollup-plugin-terser";
 import babel from "rollup-plugin-babel";
+import copy from "rollup-plugin-copy";
 
 const configurePlugins = ({ module }) => [
   babel({
@@ -18,6 +19,12 @@ const configurePlugins = ({ module }) => [
     module,
     mangle: true,
     compress: true,
+  }),
+  copy({
+    targets: [
+      { src: "test/style.css", dest: "dist/" },
+      { src: "test/script.js", dest: "dist/" },
+    ],
   }),
 ];
 

@@ -52,7 +52,7 @@ new PerformanceObserver((entryList) => {
       // Test sending the metric to an analytics endpoint.
       navigator.sendBeacon(
         `/collect`,
-        JSON.stringify({ name, renderTime: startTime, id, nodeName, url: src })
+        JSON.stringify({entryType: "first-important-paint", renderTime: startTime, id, nodeName, url: src})
       );
     }
   }
