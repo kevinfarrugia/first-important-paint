@@ -1,9 +1,16 @@
 {% extends 'layout.njk' %}
 
+{% block head %}
+  <script type="module">
+    import {start} from '{{ modulePath }}';
+    start();
+  </script>
+{% endblock %}
+
 {% block content %}
   <h1>Multiple Important Elements</h1>
   <img
-    important="true"
+    important
     src="/test/img/square.png?delay=1000"
     alt="Square"
   />
@@ -13,7 +20,7 @@
     officia non delectus voluptates nulla voluptatibus repellat suscipit
     deleniti maiores maxime. Quas, ratione?
   </p>
-  <div important="true" class="container">
+  <div important class="container">
     <strong>Important container</strong>
     <hr/>
     <ul class="list">
@@ -26,7 +33,7 @@
       <li class="item">6</li>
     </ul>
   </div>
-  <div important="true" class="container">
+  <div important class="container">
     <strong>Another important container</strong>
     <hr/>
     <ul class="list">
@@ -66,16 +73,4 @@
   <!-- Include a tall element to ensure scrolling is possible. -->
   <div style="height: 100vh"></div>
   <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
-
-  <script type="module">
-    import {getFirstImportantPaint} from '{{ modulePath }}';
-
-    getFirstImportantPaint((fip) => {
-      // Log for easier manual testing.
-      console.log(fip);
-
-      // Test sending the metric to an analytics endpoint.
-      navigator.sendBeacon(`/collect`, JSON.stringify(fip));
-    });
-  </script>
 {% endblock %}

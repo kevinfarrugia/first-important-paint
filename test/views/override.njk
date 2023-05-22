@@ -1,9 +1,16 @@
 {% extends 'layout.njk' %}
 
+{% block head %}
+  <script type="module">
+    import {start} from '{{ modulePath }}';
+    start({ markName: "hero-image", selector: "img.hero" });
+  </script>
+{% endblock %}
+
 {% block content %}
   <h1>Important Image</h1>
   <img
-    critical="true"
+    class="hero"
     src="/test/img/square.png?delay=1000"
     alt="Square"
 />
@@ -17,15 +24,19 @@
   <div style="height: 100vh"></div>
   <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
 
-  <script type="module">
-    import {getFirstImportantPaint} from '{{ modulePath }}';
+  <script>
+    new PerformanceObserver((entryList) => {
+      for (const entry of entryList.getEntries()) {
+        if (entry.name === "hero-image") {
+          console.log(entry);
 
-    getFirstImportantPaint((fip) => {
-      // Log for easier manual testing.
-      console.log(fip);
+          const {name, startTime, detail} = entry;
+          const {id, nodeName, src} = detail;
 
-      // Test sending the metric to an analytics endpoint.
-      navigator.sendBeacon(`/collect`, JSON.stringify(fip));
-    }, { markName: "first-critical-paint", selector: "[critical]" });
+          // Test sending the metric to an analytics endpoint.
+          navigator.sendBeacon(`/collect`, JSON.stringify({name, renderTime: startTime, id, nodeName, url: src}));
+        }
+      }
+    }).observe({ type: "mark", buffered: true});
   </script>
 {% endblock %}

@@ -34,10 +34,8 @@
     "prepare": "husky install"
   },
   "keywords": [
-    "crux",
     "performance",
-    "metrics",
-    "FIP"
+    "metrics"
   ],
   "author": {
     "name": "Kevin Farrugia",

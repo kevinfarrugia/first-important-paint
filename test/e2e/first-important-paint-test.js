@@ -9,7 +9,7 @@ const { imagesPainted } = require("../utils/imagesPainted.js");
 
 const DELAY = 500;
 
-describe("getFirstImportantPaint()", async function () {
+describe("FirstImportantPaint", async function () {
   // Retry all tests in this suite up to 2 times.
   this.retries(2);
 
@@ -44,9 +44,8 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
     assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
   });
 
   it("reports the correct value when the important element is an image", async function () {
@@ -63,9 +62,8 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
     assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
   });
 
   it("does not report if the user interacts with the page before the important element is rendered", async function () {
@@ -84,7 +82,9 @@ describe("getFirstImportantPaint()", async function () {
   });
 
   it("does not report if the browser does not support performance.mark", async function () {
-    if (isPerformanceMarkSupportedOnBrowser) this.skip();
+    if (isPerformanceMarkSupportedOnBrowser) {
+      this.skip();
+    }
 
     await browser.url(`/test/image?delay=${DELAY}`);
 
@@ -98,9 +98,10 @@ describe("getFirstImportantPaint()", async function () {
     assert.strictEqual(beacons.length, 0);
   });
 
-  it("the margin of error doesn't exceed 50ms when marking the LCP element as important", async function () {
-    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser)
+  it("the margin of error doesn't exceed 50ms when marking the LCP text element as important", async function () {
+    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser) {
       this.skip();
+    }
 
     await browser.url(`/test/lcp?delay=${DELAY}`);
 
@@ -112,7 +113,7 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip, lcp] = beacons;
 
-    assert(Math.abs(fip.startTime - lcp.startTime) < 50); // Greater than the document load delay.
+    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // Greater than the document load delay.
   });
 
   it("the margin of error doesn't exceed 50ms when marking the LCP image as important", async function () {
@@ -129,7 +130,7 @@ describe("getFirstImportantPaint()", async function () {
 
     const [, fip, lcp] = beacons;
 
-    assert(Math.abs(fip.startTime - lcp.startTime) < 50); // Greater than the document load delay.
+    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // Greater than the document load delay.
   });
 
   it("reports the correct value when multiple elements are marked as important", async function () {
@@ -146,9 +147,8 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
     assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
   });
 
   it("reports the correct value when overriding the default values", async function () {
@@ -165,8 +165,7 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
-    assert.strictEqual(fip.name, "first-critical-paint");
-    assert.strictEqual(fip.entryType, "mark");
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.name, "hero-image");
   });
 });

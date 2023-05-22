@@ -6,37 +6,59 @@
     <title>Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style>
-      .app {
+      html {
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+
+      body {
         font-family: sans-serif;
-        text-align: center;
+        line-height: 1.5;
+        background-color: #f8f9fa;
+        color: #3c4043;
       }
 
-      .container {
-        padding: 1em;
-      }
-
-      .list {
-        display: grid;
-        background-color: palegreen;
-        grid-template-columns: 1fr 1fr 1fr;
-        list-style: none;
-        padding: 1em;
-        min-height: 10em;
-      }
-
-      .item {
+      img,
+      video {
+        height: auto;
+        max-width: 100%;
         display: block;
-        background-color: white;
-        padding: 1em;
-        margin: 0.5em;
-        font-size: 2em;
-        line-height: 2;
-        font-weight: 700;
-        box-shadow: 1px 1px 7px -1px rgba(0, 0, 0, 0.5);
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      .nav-item {
-        margin-right: 1em;
+      p > code {
+        border: 1px solid #cccccc;
+        color: #000000;
+        padding: 0.125rem 0.25rem;
+        font-size: 0.875rem;
+      }
+
+      pre {
+        background-color: #333333;
+        border-radius: 4px;
+        color: #f8f8f2;
+        font-size: 0.875em;
+        line-height: 1.5;
+        overflow: auto;
+        padding: 0.625em;
+        text-align: left;
+        white-space: break-spaces;
+        word-break: break-all;
+      }
+
+      summary {
+        font-weight: 700;
+      }
+
+      [hidden] {
+        display: none;
       }
     </style>
     {% block head %}{% endblock %}
@@ -45,5 +67,21 @@
     <div class="app">
       {% block content %}{% endblock %}
     </div>
+
+    <script>
+      new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (entry.name === "first-important-paint") {
+            console.log(entry);
+
+            const {name, startTime, detail} = entry;
+            const {id, nodeName, src} = detail;
+
+            // Test sending the metric to an analytics endpoint.
+            navigator.sendBeacon(`/collect`, JSON.stringify({name, renderTime: startTime, id, nodeName, url: src}));
+          }
+        }
+      }).observe({ type: "mark", buffered: true});
+    </script>
   </body>
 </html
