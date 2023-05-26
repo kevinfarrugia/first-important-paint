@@ -83,7 +83,7 @@ Pages that included a text-element FIP experienced increased variance on native 
 
 Yes, it is supported on any JavaScript framework, including ReactJS.
 
-### Is there a performance overhead by using FIP?
+### Is there a performance overhead when using FIP?
 
 FIP was developed with minimal overhead. It uses `requestAnimationFrame`, does not block the main thread, and is less than 1KB minified. I have run [tests](https://docs.google.com/spreadsheets/d/1s38Dnoqzpq3e0LLUPK-q5HPThxXrJznnQzmsxZ_ePuo/edit?usp=sharing) that confirm it has no impact on user-centric metrics such as LCP.
 
