@@ -7,20 +7,20 @@ const {
 const { browserSupportsEntry } = require("../utils/browserSupportsEntry.js");
 const { imagesPainted } = require("../utils/imagesPainted.js");
 
-const DELAY = 500;
-
-describe("getFirstImportantPaint()", async function () {
+describe("FirstImportantPaint", async function () {
   // Retry all tests in this suite up to 2 times.
   this.retries(2);
 
   let isPerformanceMarkSupportedOnBrowser;
   let isLCPSupportedOnBrowser;
+  let isElementTimingSupportedOnBrowser;
 
   before(async function () {
     isPerformanceMarkSupportedOnBrowser = await browserSupportsEntry("mark");
     isLCPSupportedOnBrowser = await browserSupportsEntry(
       "largest-contentful-paint"
     );
+    isElementTimingSupportedOnBrowser = await browserSupportsEntry("element");
   });
 
   beforeEach(async function () {
@@ -30,10 +30,10 @@ describe("getFirstImportantPaint()", async function () {
     await browser.url("about:blank");
   });
 
-  it("reports the correct value when the important element is a block-element", async function () {
+  it("reports the correct value when the important element is a text-element", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/div?delay=${DELAY}`);
+    await browser.url(`/test/div`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -44,15 +44,14 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
-    assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.entryType, "first-important-paint");
   });
 
   it("reports the correct value when the important element is an image", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image?delay=${DELAY}`);
+    await browser.url(`/test/image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -63,15 +62,14 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
-    assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.entryType, "first-important-paint");
   });
 
   it("does not report if the user interacts with the page before the important element is rendered", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image?delay=${DELAY}&scroll=true`);
+    await browser.url(`/test/image&scroll=true`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -84,9 +82,11 @@ describe("getFirstImportantPaint()", async function () {
   });
 
   it("does not report if the browser does not support performance.mark", async function () {
-    if (isPerformanceMarkSupportedOnBrowser) this.skip();
+    if (isPerformanceMarkSupportedOnBrowser) {
+      this.skip();
+    }
 
-    await browser.url(`/test/image?delay=${DELAY}`);
+    await browser.url(`/test/image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -98,11 +98,12 @@ describe("getFirstImportantPaint()", async function () {
     assert.strictEqual(beacons.length, 0);
   });
 
-  it("the margin of error doesn't exceed 50ms when marking the LCP element as important", async function () {
-    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser)
+  it("the margin of error doesn't exceed 50ms when marking the LCP text element as important", async function () {
+    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser) {
       this.skip();
+    }
 
-    await browser.url(`/test/lcp?delay=${DELAY}`);
+    await browser.url(`/test/lcp-text`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -112,14 +113,14 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip, lcp] = beacons;
 
-    assert(Math.abs(fip.startTime - lcp.startTime) < 50); // Greater than the document load delay.
+    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // error margin is under 50ms
   });
 
   it("the margin of error doesn't exceed 50ms when marking the LCP image as important", async function () {
     if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser)
       this.skip();
 
-    await browser.url(`/test/lcp-image?delay=${DELAY}`);
+    await browser.url(`/test/lcp-image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -129,13 +130,56 @@ describe("getFirstImportantPaint()", async function () {
 
     const [, fip, lcp] = beacons;
 
-    assert(Math.abs(fip.startTime - lcp.startTime) < 50); // Greater than the document load delay.
+    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // error margin is under 50ms
+  });
+
+  it("the margin of error doesn't exceed 50ms when using Element Timing API on a text element marked as important", async function () {
+    if (
+      !isPerformanceMarkSupportedOnBrowser ||
+      !isElementTimingSupportedOnBrowser
+    ) {
+      this.skip();
+    }
+
+    await browser.url(`/test/element-timing-text`);
+
+    // Wait until all images are loaded and fully rendered.
+    await imagesPainted();
+
+    await beaconCountIs(3);
+    const beacons = await getBeacons();
+
+    const fip = beacons.find(n => n.entryType === "first-important-paint");
+    const element = beacons.find(n => n.entryType === "element");
+
+    assert(Math.abs(fip.renderTime - element.renderTime) < 50); // error margin is under 50ms
+  });
+
+  it("the margin of error doesn't exceed 50ms when using Element Timing API on an image element marked as important", async function () {
+    if (
+      !isPerformanceMarkSupportedOnBrowser ||
+      !isElementTimingSupportedOnBrowser
+    )
+      this.skip();
+
+    await browser.url(`/test/element-timing-image`);
+
+    // Wait until all images are loaded and fully rendered.
+    await imagesPainted();
+
+    await beaconCountIs(4);
+    const beacons = await getBeacons();
+
+    const fip = beacons.find(n => n.entryType === "first-important-paint");
+    const element = beacons.find(n => n.entryType === "element");
+
+    assert(Math.abs(fip.renderTime - element.renderTime) < 50); // error margin is under 50ms
   });
 
   it("reports the correct value when multiple elements are marked as important", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/multiple?delay=${DELAY}`);
+    await browser.url(`/test/multiple`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -146,15 +190,14 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
-    assert.strictEqual(fip.name, "first-important-paint");
-    assert.strictEqual(fip.entryType, "mark");
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.entryType, "first-important-paint");
   });
 
   it("reports the correct value when overriding the default values", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/override?delay=${DELAY}`);
+    await browser.url(`/test/override`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -165,8 +208,25 @@ describe("getFirstImportantPaint()", async function () {
 
     const [fip] = beacons;
 
-    assert(fip.startTime > DELAY); // Greater than the document load delay.
-    assert.strictEqual(fip.name, "first-critical-paint");
-    assert.strictEqual(fip.entryType, "mark");
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.entryType, "hero-image");
+  });
+
+  it("reports the correct value when the the important element is a text-element and the page uses webfonts", async function () {
+    if (!isPerformanceMarkSupportedOnBrowser) this.skip();
+
+    await browser.url(`/test/webfont`);
+
+    // Wait until all images are loaded and fully rendered.
+    await imagesPainted();
+
+    await beaconCountIs(1);
+    const beacons = await getBeacons();
+    assert.strictEqual(beacons.length, 1);
+
+    const [fip] = beacons;
+
+    assert(fip.renderTime > DELAY); // Greater than the document load delay.
+    assert.strictEqual(fip.entryType, "first-important-paint");
   });
 });

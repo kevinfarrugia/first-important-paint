@@ -1,0 +1,48 @@
+{% extends 'layout.njk' %}
+
+{% block head %}
+  <script type="module">
+    import {start} from '{{ modulePath }}';
+    start();
+  </script>
+
+  <script>
+    new PerformanceObserver(list => {
+      const entries = list.getEntries();
+      const entry = entries[entries.length - 1];
+
+      // Log for easier manual testing.
+      console.log(entry);
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(entry));
+    }).observe({type: 'largest-contentful-paint', buffered: true});
+
+    new PerformanceObserver(list => {
+      const entries = list.getEntries();
+      const entry = entries[entries.length - 1];
+
+      // Log for easier manual testing.
+      console.log(entry);
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(entry));
+    }).observe({type: 'element', buffered: true});
+  </script>
+{% endblock %}
+
+{% block content %}
+  <h1 important elementTiming="heading">
+    Element Timing on text element
+  </h1>
+  <img
+    src="/test/img/square.png?delay=1000"
+    alt="Square"
+/>
+  <p>
+    Lorem
+  </p>
+  <!-- Include a tall element to ensure scrolling is possible. -->
+  <div style="height: 100vh"></div>
+  <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit.</footer>
+{% endblock %}

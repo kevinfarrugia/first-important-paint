@@ -5,45 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <style>
-      .app {
-        font-family: sans-serif;
-        text-align: center;
-      }
-
-      .container {
-        padding: 1em;
-      }
-
-      .list {
-        display: grid;
-        background-color: palegreen;
-        grid-template-columns: 1fr 1fr 1fr;
-        list-style: none;
-        padding: 1em;
-        min-height: 10em;
-      }
-
-      .item {
-        display: block;
-        background-color: white;
-        padding: 1em;
-        margin: 0.5em;
-        font-size: 2em;
-        line-height: 2;
-        font-weight: 700;
-        box-shadow: 1px 1px 7px -1px rgba(0, 0, 0, 0.5);
-      }
-
-      .nav-item {
-        margin-right: 1em;
-      }
-    </style>
     {% block head %}{% endblock %}
   </head>
   <body onload="{% if scroll %}window.scrollTo(0, document.body.scrollHeight);{% endif %}">
     <div class="app">
       {% block content %}{% endblock %}
     </div>
+    <script>
+      new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (entry.name === "first-important-paint") {
+            console.log(entry);
+
+            const {name, startTime, detail} = entry;
+            const {id, nodeName, src} = detail;
+
+            // Test sending the metric to an analytics endpoint.
+            navigator.sendBeacon(`/collect`, JSON.stringify({entryType: "first-important-paint", renderTime: startTime, id, nodeName, url: src}));
+          }
+        }
+      }).observe({ type: "mark", buffered: true});
+    </script>
   </body>
 </html
