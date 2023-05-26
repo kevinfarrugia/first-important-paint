@@ -71,7 +71,7 @@ You can override the default configurations by passing parameters to the `start`
 
 ## Quality
 
-To check the quality of the metric, I ran more than [1000 tests](https://docs.google.com/spreadsheets/d/1s38Dnoqzpq3e0LLUPK-q5HPThxXrJznnQzmsxZ_ePuo/edit?usp=sharing) that measured the FIP, LCP and Element Timing on a page.
+To check the quality of the metric, I ran more than [5000 tests](https://docs.google.com/spreadsheets/d/1s38Dnoqzpq3e0LLUPK-q5HPThxXrJznnQzmsxZ_ePuo/edit?usp=sharing) that measured the FIP, LCP and Element Timing on a page.
 
 The tests indicate that FIP correlates or strongly correlates with LCP and Element Timing. This means that the metric is predictable and reasonably accurate. When tested on a 4G or 3G connection for an image element, the median FIP was within 10ms from the median LCP or Element Timing. On native connections, this increased to 50ms.
 
