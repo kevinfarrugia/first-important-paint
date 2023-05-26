@@ -5,25 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/dist/style.css?delay=200">
     {% block head %}{% endblock %}
   </head>
   <body onload="{% if scroll %}window.scrollTo(0, document.body.scrollHeight);{% endif %}">
     <div class="app">
       {% block content %}{% endblock %}
     </div>
-
-    <script>
-      // block main thread for N milliseconds
-      function sleep(n) {
-        var start = new Date().getTime();
-        while (new Date().getTime() < start + n) {
-          // do nothing
-        }
-      }
-      sleep(200);
-    </script>
-
     <script>
       new PerformanceObserver((entryList) => {
         for (const entry of entryList.getEntries()) {

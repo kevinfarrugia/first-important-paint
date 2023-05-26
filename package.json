@@ -25,6 +25,7 @@
     "release:patch": "npm version patch -m 'Release v%s' && npm publish",
     "test": "npm-run-all build -p -r test:*",
     "test:e2e": "wdio wdio.conf.js",
+    "test:quality": "wdio wdio-quality.conf.js",
     "test:server": "node test/server.js",
     "start": "run-s build:ts watch",
     "watch": "run-p watch:*",
@@ -59,8 +60,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.16.10",
-    "@babel/preset-env": "^7.16.11",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
     "@wdio/cli": "^7.16.13",
@@ -70,7 +71,7 @@
     "@wdio/spec-reporter": "^7.16.13",
     "babel-eslint": "^10.1.0",
     "body-parser": "^1.19.1",
-    "chromedriver": "^97.0.0",
+    "chromedriver": "^113.0.0",
     "eslint": "^8.10.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -85,7 +86,6 @@
     "nunjucks": "^3.2.3",
     "rollup": "^2.64.0",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.5.5",
     "wdio-chromedriver-service": "^7.2.6"

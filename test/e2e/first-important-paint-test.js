@@ -7,14 +7,13 @@ const {
 const { browserSupportsEntry } = require("../utils/browserSupportsEntry.js");
 const { imagesPainted } = require("../utils/imagesPainted.js");
 
-const DELAY = 100;
-
 describe("FirstImportantPaint", async function () {
   // Retry all tests in this suite up to 2 times.
   this.retries(2);
 
   let isPerformanceMarkSupportedOnBrowser;
   let isLCPSupportedOnBrowser;
+  let isElementTimingSupportedOnBrowser;
 
   before(async function () {
     isPerformanceMarkSupportedOnBrowser = await browserSupportsEntry("mark");
@@ -31,10 +30,10 @@ describe("FirstImportantPaint", async function () {
     await browser.url("about:blank");
   });
 
-  it("reports the correct value when the important element is a block-element", async function () {
+  it("reports the correct value when the important element is a text-element", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/div?delay=${DELAY}`);
+    await browser.url(`/test/div`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -52,7 +51,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when the important element is an image", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image?delay=${DELAY}`);
+    await browser.url(`/test/image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -70,7 +69,7 @@ describe("FirstImportantPaint", async function () {
   it("does not report if the user interacts with the page before the important element is rendered", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image?delay=${DELAY}&scroll=true`);
+    await browser.url(`/test/image&scroll=true`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -87,7 +86,7 @@ describe("FirstImportantPaint", async function () {
       this.skip();
     }
 
-    await browser.url(`/test/image?delay=${DELAY}`);
+    await browser.url(`/test/image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -104,7 +103,7 @@ describe("FirstImportantPaint", async function () {
       this.skip();
     }
 
-    await browser.url(`/test/lcp-text?delay=${DELAY}`);
+    await browser.url(`/test/lcp-text`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -121,7 +120,7 @@ describe("FirstImportantPaint", async function () {
     if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser)
       this.skip();
 
-    await browser.url(`/test/lcp-image?delay=${DELAY}`);
+    await browser.url(`/test/lcp-image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -142,7 +141,7 @@ describe("FirstImportantPaint", async function () {
       this.skip();
     }
 
-    await browser.url(`/test/element-timing-text?delay=${DELAY}`);
+    await browser.url(`/test/element-timing-text`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -163,7 +162,7 @@ describe("FirstImportantPaint", async function () {
     )
       this.skip();
 
-    await browser.url(`/test/element-timing-image?delay=${DELAY}`);
+    await browser.url(`/test/element-timing-image`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -180,7 +179,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when multiple elements are marked as important", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/multiple?delay=${DELAY}`);
+    await browser.url(`/test/multiple`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -198,7 +197,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when overriding the default values", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/override?delay=${DELAY}`);
+    await browser.url(`/test/override`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -216,7 +215,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when the the important element is a text-element and the page uses webfonts", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/webfont?delay=${DELAY}`);
+    await browser.url(`/test/webfont`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();

@@ -24,6 +24,16 @@ app.use((req, res, next) => {
   }
 });
 
+// Simulate an API that sends a random string
+app.get("/api/:length", (req, res) => {
+  const length = parseInt(req.params.length, 10);
+  const data = Array.from({ length })
+    .map(() => Math.random().toString(36).charAt(2))
+    .join("");
+  res.contentType("application/json");
+  res.send(JSON.stringify({ data }));
+});
+
 // Add a "collect" endpoint to simulate analytics beacons.
 app.post("/collect", bodyParser.text(), (req, res) => {
   // console.log(JSON.stringify(JSON.parse(req.body), null, 2));

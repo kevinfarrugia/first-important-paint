@@ -95,4 +95,5 @@ Anyone and everyone is welcome to contribute to this project and leave feedback.
 
 This software is released under the terms of the [MIT license](https://github.com/kevinfarrugia/first-important-paint/blob/main/LICENSE).
 
-Photo by [Ferenc Horvath](https://unsplash.com/@designhorf?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/photos/9cYiqVDeXDc?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
+- Photo by [Ferenc Horvath](https://unsplash.com/@designhorf?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/photos/9cYiqVDeXDc?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
+- Video by [Michal Marek](https://www.pexels.com/video/waves-rushing-and-splashing-to-the-shore-1409899/)

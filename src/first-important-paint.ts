@@ -44,21 +44,26 @@ const measure = (options: Options) => () => {
       if (!element && element !== n) {
         // if the element is an image, wait until it has has completely loaded
         if (n.tagName !== "IMG" || (n as HTMLImageElement).complete) {
+          // set the element to the current element
           element = n;
-          // on the next frame
           requestAnimationFrame(() => {
-            // set the element to the current element
-
-            // create a new performance.mark entry
-            if (performance.mark) {
-              performance.mark(markName, {
-                detail: {
-                  nodeName: n.nodeName,
-                  src: n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
-                  id: n.id,
-                },
-              });
-            }
+            requestAnimationFrame(() => {
+              // queue a high priority task using onmessage
+              const messageChannel = new MessageChannel();
+              messageChannel.port1.onmessage = () => {
+                // create a new performance.mark entry
+                performance.mark(markName, {
+                  detail: {
+                    nodeName: n.nodeName,
+                    src:
+                      n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
+                    id: n.id,
+                  },
+                });
+              };
+              // Queue the Task on the Task Queue
+              messageChannel.port2.postMessage(undefined);
+            });
           });
         }
       }
