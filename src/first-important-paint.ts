@@ -37,35 +37,45 @@ const measure = (options: Options) => () => {
   const { markName, selector, timeout } = options;
 
   // iterate through all elements matching the selector
-  document.querySelectorAll(selector).forEach((n) => {
+  document.querySelectorAll(selector).forEach(async (n) => {
     // if the user hasn't interacted with the page
     if (!hasUserInteractedWithPage) {
       // if we haven't already measured FIP
-      if (!element && element !== n) {
+      const isReady = new Promise((resolve) => {
         // if the element is an image, wait until it has has completely loaded
-        if (n.tagName !== "IMG" || (n as HTMLImageElement).complete) {
-          // set the element to the current element
-          element = n;
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              // queue a high priority task using onmessage
-              const messageChannel = new MessageChannel();
-              messageChannel.port1.onmessage = () => {
-                // create a new performance.mark entry
-                performance.mark(markName, {
-                  detail: {
-                    nodeName: n.nodeName,
-                    src:
-                      n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
-                    id: n.id,
-                  },
-                });
-              };
-              // Queue the Task on the Task Queue
-              messageChannel.port2.postMessage(undefined);
-            });
+        if (n.tagName === "IMG" && (n as HTMLImageElement).complete) {
+          resolve(true);
+        } else {
+          // if the image is a text element, wait until all fonts have loaded
+          document.fonts.ready.then(() => {
+            resolve(true);
           });
         }
+      });
+
+      await isReady;
+
+      if (!element && element !== n) {
+        // set the element to the current element
+        element = n;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            // queue a high priority task using onmessage
+            const messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = () => {
+              // create a new performance.mark entry
+              performance.mark(markName, {
+                detail: {
+                  nodeName: n.nodeName,
+                  src: n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
+                  id: n.id,
+                },
+              });
+            };
+            // Queue the Task on the Task Queue
+            messageChannel.port2.postMessage(undefined);
+          });
+        });
       }
     }
   });

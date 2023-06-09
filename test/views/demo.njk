@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/test/scripts/main.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=block">
+    <link rel="stylesheet" href="/test/css/style.css">
+    <style>
+      header {
+        height: calc(100vh - 1rem);
+        background: url('/test/img/background-image.jpg') no-repeat center center #31518c;
+        background-size: cover;
+      }
+
+      .nav {
+        margin: 0;
+        padding: 1rem;
+        display: flex;
+        list-style: none;
+        font-weight: bold;
+        gap: 1rem;        
+        text-align: center;
+        justify-content: center;
+      }
+
+      .nav a {
+        color: #fff;
+      }
+
+      .title {
+        color: #fff;
+        font-size: 4rem;
+        font-family: 'Bebas Neue', sans-serif;
+        width: 100%;
+        display: inline-block;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="title">
+          <h1>Lorem</h1>
+      </div>
+      <nav>
+        <ul class="nav">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h1 class="title" important>Lorem ipsum dolor sit amet</h1>
+      <div class="section">
+        <ul class="list"> 
+          <li class="item">
+            <h3 class="itemTitle">
+              <a href="#">Lorem ipsum dolor sit amet</a>
+            </h3>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl aliquet nunc, quis aliquam no.
+            </p>
+          </li>
+          <li class="item">
+            <h3 class="itemTitle">
+              <a href="#">Lorem ipsum dolor sit amet</a>
+            </h3>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl aliquet nunc, quis aliquam no.
+            </p>
+          </li>
+          <li class="item">
+            <h3 class="itemTitle">
+              <a href="#">Lorem ipsum dolor sit amet</a>
+            </h3>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl aliquet nunc, quis aliquam no.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </main>
+    <script>
+      new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        const entry = entries[entries.length - 1];
+        console.log(entry);
+      }).observe({ type: "largest-contentful-paint", buffered: true });
+
+      new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (entry.name === "first-important-paint") {
+            console.log(entry);
+          }
+        }
+      }).observe({ type: "mark", buffered: true });
+    </script>
+  </body>
+</html
