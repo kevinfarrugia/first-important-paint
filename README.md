@@ -71,11 +71,17 @@ You can override the default configurations by passing parameters to the `start`
 
 ## Quality
 
-To check the quality of the metric, I ran more than [5000 tests](https://docs.google.com/spreadsheets/d/1s38Dnoqzpq3e0LLUPK-q5HPThxXrJznnQzmsxZ_ePuo/edit?usp=sharing) that measured the FIP, LCP and Element Timing on a page.
+To check the quality of the metric, I [ran several tests and document my research](https://imkev.dev/custom-metrics).
 
-The tests indicate that FIP correlates or strongly correlates with LCP and Element Timing. This means that the metric is predictable and reasonably accurate. When tested on a 4G or 3G connection for an image element, the median FIP was within 10ms from the median LCP or Element Timing. On native connections, this increased to 50ms.
+The tests indicate that FIP correlates with LCP and Element Timing and is stable and elastic, but tends to underreport.
 
-Pages that included a text-element FIP experienced increased variance on native connections as the browser would combine several tasks into a single paint. As a result, the FIP reported would be quicker than the time it is painted to screen.
+## Known limitations
+
+- FIP will wait for _all_ fonts to finish downloading. This means that if the element you are measuring does not use any fonts but other elements on the page do, then it will not fire until all fonts have finished downloading.
+- If the FIP element is offscreen it will still be reported.
+- It is not tested on `<video>` elements.
+- When a `<picture>` element is marked as `important`, the metric will correctly measure the time the `<picture>` element renders but will log the `src` of the `<img>` not necessarily the image rendered.
+- FIP does not factor in the GPU.
 
 ## FAQ
 
@@ -85,7 +91,7 @@ Yes, it is supported on any JavaScript framework, including ReactJS.
 
 ### Is there a performance overhead when using FIP?
 
-FIP was developed with minimal overhead. It uses `requestAnimationFrame`, does not block the main thread, and is less than 1KB minified. I have run [tests](https://docs.google.com/spreadsheets/d/1s38Dnoqzpq3e0LLUPK-q5HPThxXrJznnQzmsxZ_ePuo/edit?usp=sharing) that confirm it has no impact on user-centric metrics such as LCP.
+FIP was developed with minimal overhead. It uses `requestAnimationFrame` and `postmessage`, does not block the main thread, and is less than 1KB minified. My tests indicate that it has no impact on LCP.
 
 ### Which browsers are supported?
 
