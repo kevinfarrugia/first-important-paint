@@ -1,6 +1,6 @@
 {
   "name": "first-important-paint",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Measure the time taken to paint the first important element.",
   "main": "dist/first-important-paint.umd.js",
   "module": "dist/first-important-paint.js",
