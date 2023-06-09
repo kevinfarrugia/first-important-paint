@@ -23,7 +23,7 @@
     "release:major": "npm version major -m 'Release v%s' && npm publish",
     "release:minor": "npm version minor -m 'Release v%s' && npm publish",
     "release:patch": "npm version patch -m 'Release v%s' && npm publish",
-    "test": "npm-run-all build -p -r test:*",
+    "test": "npm-run-all build -p -r test:server test:e2e",
     "test:e2e": "wdio wdio.conf.js",
     "test:quality": "wdio wdio-quality.conf.js",
     "test:server": "node test/server.js",
