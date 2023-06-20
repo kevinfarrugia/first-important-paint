@@ -20,10 +20,10 @@ let hasUserInteractedWithPage = false;
 const events = ["mousedown", "keypress", "scroll", "touchstart"];
 
 const handleUserInteraction = () => {
+  hasUserInteractedWithPage = true;
   events.forEach((n) => {
     document.removeEventListener(n, handleUserInteraction);
   });
-  hasUserInteractedWithPage = true;
 };
 
 events.forEach((n) => {
@@ -33,49 +33,48 @@ events.forEach((n) => {
   });
 });
 
+const isElementReady = async (n: Element) => {
+  // if the element is an image, wait until it has has completely loaded
+  if (n.tagName === "IMG") {
+    return (n as HTMLImageElement).complete;
+  }
+
+  // if the image is a text element, wait until all fonts have loaded
+  await document.fonts.ready;
+  return true;
+};
+
+const measureElement = (n: Element, markName: string) => {
+  requestAnimationFrame(() => {
+    // queue a high priority task using onmessage
+    const messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = () => {
+      // create a new performance.mark entry
+      performance.mark(markName, {
+        detail: {
+          nodeName: n.nodeName,
+          src: n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
+          id: n.id,
+        },
+      });
+    };
+    // Queue the Task on the Task Queue
+    messageChannel.port2.postMessage(undefined);
+  });
+};
+
 const measure = (options: Options) => () => {
   const { markName, selector, timeout } = options;
 
   // iterate through all elements matching the selector
   document.querySelectorAll(selector).forEach(async (n) => {
     // if the user hasn't interacted with the page
-    if (!hasUserInteractedWithPage) {
-      // if we haven't already measured FIP
-      const isReady = new Promise((resolve) => {
-        // if the element is an image, wait until it has has completely loaded
-        if (n.tagName === "IMG" && (n as HTMLImageElement).complete) {
-          resolve(true);
-        } else {
-          // if the image is a text element, wait until all fonts have loaded
-          document.fonts.ready.then(() => {
-            resolve(true);
-          });
-        }
-      });
-
-      await isReady;
-
-      if (!element && element !== n) {
+    if (!hasUserInteractedWithPage && !element) {
+      const isReady = await isElementReady(n);
+      if (isReady && !hasUserInteractedWithPage && !element) {
         // set the element to the current element
         element = n;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // queue a high priority task using onmessage
-            const messageChannel = new MessageChannel();
-            messageChannel.port1.onmessage = () => {
-              // create a new performance.mark entry
-              performance.mark(markName, {
-                detail: {
-                  nodeName: n.nodeName,
-                  src: n.nodeName === "IMG" ? (n as HTMLImageElement).src : "",
-                  id: n.id,
-                },
-              });
-            };
-            // Queue the Task on the Task Queue
-            messageChannel.port2.postMessage(undefined);
-          });
-        });
+        measureElement(n, markName);
       }
     }
   });
@@ -88,7 +87,6 @@ const measure = (options: Options) => () => {
   }
 };
 
-// start measuring on the next frame
 export function start(options: FirstImportantPaintOptions = {}) {
   const opts = Object.assign(DEFAULT_OPTIONS, options);
   handle = requestAnimationFrame(measure(opts));

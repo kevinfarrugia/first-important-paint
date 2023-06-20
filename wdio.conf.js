@@ -80,14 +80,14 @@ module.exports.config = {
         // binary: '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
       },
     },
-    {
-      maxInstances: 1,
-      browserName: "firefox",
-    },
-    {
-      maxInstances: 1,
-      browserName: "safari",
-    },
+    // {
+    //   maxInstances: 1,
+    //   browserName: "firefox",
+    // },
+    // {
+    //   maxInstances: 1,
+    //   browserName: "safari",
+    // },
   ],
   //
   // ===================

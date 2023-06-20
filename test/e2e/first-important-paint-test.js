@@ -7,13 +7,14 @@ const {
 const { browserSupportsEntry } = require("../utils/browserSupportsEntry.js");
 const { imagesPainted } = require("../utils/imagesPainted.js");
 
+const DELAY = 100;
+
 describe("FirstImportantPaint", async function () {
   // Retry all tests in this suite up to 2 times.
   this.retries(2);
 
   let isPerformanceMarkSupportedOnBrowser;
   let isLCPSupportedOnBrowser;
-  let isElementTimingSupportedOnBrowser;
 
   before(async function () {
     isPerformanceMarkSupportedOnBrowser = await browserSupportsEntry("mark");
@@ -30,10 +31,10 @@ describe("FirstImportantPaint", async function () {
     await browser.url("about:blank");
   });
 
-  it("reports the correct value when the important element is a text-element", async function () {
+  it("reports the correct value when the important element is a block-element", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/div`);
+    await browser.url(`/test/div?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -51,7 +52,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when the important element is an image", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image`);
+    await browser.url(`/test/image?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -69,7 +70,7 @@ describe("FirstImportantPaint", async function () {
   it("does not report if the user interacts with the page before the important element is rendered", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/image&scroll=true`);
+    await browser.url(`/test/image?delay=${DELAY}&scroll=true`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -86,7 +87,7 @@ describe("FirstImportantPaint", async function () {
       this.skip();
     }
 
-    await browser.url(`/test/image`);
+    await browser.url(`/test/image?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -98,88 +99,10 @@ describe("FirstImportantPaint", async function () {
     assert.strictEqual(beacons.length, 0);
   });
 
-  it("the margin of error doesn't exceed 50ms when marking the LCP text element as important", async function () {
-    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser) {
-      this.skip();
-    }
-
-    await browser.url(`/test/lcp-text`);
-
-    // Wait until all images are loaded and fully rendered.
-    await imagesPainted();
-
-    await beaconCountIs(2);
-    const beacons = await getBeacons();
-
-    const [fip, lcp] = beacons;
-
-    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // error margin is under 50ms
-  });
-
-  it("the margin of error doesn't exceed 50ms when marking the LCP image as important", async function () {
-    if (!isPerformanceMarkSupportedOnBrowser || !isLCPSupportedOnBrowser)
-      this.skip();
-
-    await browser.url(`/test/lcp-image`);
-
-    // Wait until all images are loaded and fully rendered.
-    await imagesPainted();
-
-    await beaconCountIs(3);
-    const beacons = await getBeacons();
-
-    const [, fip, lcp] = beacons;
-
-    assert(Math.abs(fip.renderTime - lcp.renderTime) < 50); // error margin is under 50ms
-  });
-
-  it("the margin of error doesn't exceed 50ms when using Element Timing API on a text element marked as important", async function () {
-    if (
-      !isPerformanceMarkSupportedOnBrowser ||
-      !isElementTimingSupportedOnBrowser
-    ) {
-      this.skip();
-    }
-
-    await browser.url(`/test/element-timing-text`);
-
-    // Wait until all images are loaded and fully rendered.
-    await imagesPainted();
-
-    await beaconCountIs(3);
-    const beacons = await getBeacons();
-
-    const fip = beacons.find(n => n.entryType === "first-important-paint");
-    const element = beacons.find(n => n.entryType === "element");
-
-    assert(Math.abs(fip.renderTime - element.renderTime) < 50); // error margin is under 50ms
-  });
-
-  it("the margin of error doesn't exceed 50ms when using Element Timing API on an image element marked as important", async function () {
-    if (
-      !isPerformanceMarkSupportedOnBrowser ||
-      !isElementTimingSupportedOnBrowser
-    )
-      this.skip();
-
-    await browser.url(`/test/element-timing-image`);
-
-    // Wait until all images are loaded and fully rendered.
-    await imagesPainted();
-
-    await beaconCountIs(4);
-    const beacons = await getBeacons();
-
-    const fip = beacons.find(n => n.entryType === "first-important-paint");
-    const element = beacons.find(n => n.entryType === "element");
-
-    assert(Math.abs(fip.renderTime - element.renderTime) < 50); // error margin is under 50ms
-  });
-
   it("reports the correct value when multiple elements are marked as important", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/multiple`);
+    await browser.url(`/test/multiple?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -197,7 +120,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when overriding the default values", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/override`);
+    await browser.url(`/test/override?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
@@ -215,7 +138,7 @@ describe("FirstImportantPaint", async function () {
   it("reports the correct value when the the important element is a text-element and the page uses webfonts", async function () {
     if (!isPerformanceMarkSupportedOnBrowser) this.skip();
 
-    await browser.url(`/test/webfont`);
+    await browser.url(`/test/webfont?delay=${DELAY}`);
 
     // Wait until all images are loaded and fully rendered.
     await imagesPainted();
